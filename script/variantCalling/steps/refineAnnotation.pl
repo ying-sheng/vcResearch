@@ -2,7 +2,7 @@
 use strict;
 
 
-my ($annFile, $vcfFile, $freqFile, $outputFile, $transcriptFile, $hideMessage) = @ARGV;
+my ($annFile, $vcfFile, $freqFile, $outputFile, $hideMessage, $transcriptFile) = @ARGV;
 
 if(!$hideMessage){
 

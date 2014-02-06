@@ -45,11 +45,6 @@ if(!(-d "060_delivery")){
   system "mkdir 060_delivery";
 }
 
-if(!(-d "070_QC")){
-  system "mkdir 070_QC";
-}
-
-
 ##### Main inputs and options
 
 print "########### Get main inputs and options from profileFile.txt or command line .....\n\n"; # need: run name, project name, sample ID and capture kits
@@ -57,7 +52,6 @@ print "########### Get main inputs and options from profileFile.txt or command l
 my $runID = $configuration->val("Sample","runID");
 my $project = $configuration->val("Sample","project");
 my $sampleID = $configuration->val("Sample","sampleID");
-my $genePanel = $configuration->val("Sample","genePanel");
 my $captureKitDir = $configuration->val("Sample","captureKit");
 
 my $captureV = $captureKitDir;
@@ -140,7 +134,7 @@ $bamFilePath =~ s/(.*)\/results\/.*/$1/;
 
 my @checkAlignment = `grep -i done $bamFilePath/logs/*`;
 my @alignLogs = glob "$bamFilePath/logs/*";
-if(scalar(@checkAlignment) != scalar(@alignLogs)){
+if((scalar(@checkAlignment) != scalar(@alignLogs)) or (scalar(@alignLogs) < 3)){
   print "The alignment doesn't finish properly. The following are finished steps:\n";
   print join ("\n", @checkAlignment), "\n";
   print "Please check and rerun the script\n";
@@ -152,9 +146,6 @@ system "mkdir 010_alignment/logs";
 
 system "rsync -ruaP /condor_sh/projects/$project/$sampleID/mapping*/logs/* 010_alignment/logs";
 system "rsync -ruaP /condor_sh/projects/$project/$sampleID/mapping*/results/collectAlignmentSummaryMetrics.txt 010_alignment/result";
-
-# system "rsync -ruaP /condor_sh/projects/$project/$sampleID/*.qc.pdf 00_fastqFilesAndQC";
-# system "rsync -ruaP /condor_sh/projects/$project/$sampleID/data/*.gz 00_fastqFilesAndQC";
 
 system "rsync -ruaP $configFile ./";
 
@@ -320,7 +311,7 @@ if(!(-d "040_coverageIn-house")){
   
   chdir("040_coverageIn-house");
 
-  if(!(-e "coverage_per_transcript.csv") or !(-e "coverage_per_exon.csv") or !(-e "lowCoverage.bed")){
+  if(!(-e "coverage_per_cdExon.10.tsv")){
     $bInHouse = 1;
   }
 

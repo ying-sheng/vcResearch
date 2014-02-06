@@ -36,14 +36,14 @@ my ($bAlignSum, $bInsertSum, $bHsMetrics, $bInHouse);
 
 # sample
 my $sampleID = $configuration->val("Sample","sampleID");
-my $genePanel = $configuration->val("Sample","genePanel");
 
 # reference file
 my $refFile = $configuration->val("Data","genomeB37DecoyFasta");
+my $wesCoverageRegion = $configuration->val("Data", "wesCoverageRegion");
 
 # tools
 my $picardDir = $configuration->val("Tool","picard");
-my $coveragePath = $configuration->val("Script","coveragePath");
+my $bedtoolsDir = $configuration->val("Tool","bedtools");
 
 my $max_insert_size = 600;
 
@@ -132,15 +132,13 @@ if($bInHouse == 1){
 
   chdir("040_coverageIn-house");
 
-  print REPORT "python $coveragePath/coverage_qc.py --bampath $bamFile --genepanelpath $genePanel --outputdir ./ --samplename $sampleID --aggregation transcript --runinitial True --mainoutput \"coverage_per_transcript.csv\"\n";
-  print REPORT "python $coveragePath/coverage_qc.py --bampath $bamFile --genepanelpath $genePanel --outputdir ./ --samplename $sampleID --aggregation exon --runinitial False --mainoutput \"coverage_per_exon.csv\"\n\n";
+  print REPORT "$bedtoolsDir/coverageBed -abam $bamFile -b $wesCoverageRegion -d > eachBase.1-based.coverage";
+  print REPORT "bash $FindBin::Bin/coverageWES.bash";
 
-  system "python $coveragePath/coverage_qc.py --bampath $bamFile --genepanelpath $genePanel --outputdir ./ --samplename $sampleID --aggregation transcript --runinitial True --mainoutput \"coverage_per_transcript.csv\"";
-  system "python $coveragePath/coverage_qc.py --bampath $bamFile --genepanelpath $genePanel --outputdir ./ --samplename $sampleID --aggregation exon --runinitial False --mainoutput \"coverage_per_exon.csv\"";
+  system "$bedtoolsDir/coverageBed -abam $bamFile -b $wesCoverageRegion -d > eachBase.1-based.coverage";
+  system "bash $FindBin::Bin/coverageWES.bash";
 
-  system "cp coverage_per_transcript.csv ../../060_delivery/";
-  system "cp coverage_per_exon.csv ../../060_delivery/";
-  system "cp lowCoverage.bed ../../060_delivery";
+  system "cp coverage_per_cdExon.10.tsv ../../060_delivery/";
 
   chdir("..");
 

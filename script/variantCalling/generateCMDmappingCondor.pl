@@ -177,6 +177,14 @@ foreach my $eachSample(@sampleFolders){
       print "Can not find $dataDistro/$dataPath for $dataName";
     }
 
+    $dataName = "wesCoverageRegion"; 
+    $dataPath = "$researchBundle/refData/wesCoverage/cdExon.ucsc.refGene.knowGene.unique.geneName.flanking2bp.bed";
+    if(-e "$dataPath"){
+      print PROFILE "$dataName = $dataPath\n";
+    }else{
+      print "Can not find $dataPath for $dataName";
+    }
+
     $dataName = "omni"; 
     $dataPath = $dataConfiguration->val("variantDbs","omni");
     if(-e "$dataDistro/$dataPath"){

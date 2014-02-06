@@ -22,7 +22,7 @@ use Config::IniFiles;
 
 print "\nChecking whether the following steps have been done ......\n\n\tannotation\n\n";
 
-if((-e "allAnnotation.hg19_multianno.txt") and (-e "allAnnotationInCand.hg19_multianno.txt")){
+if(-e "allAnnotation.hg19_multianno.txt"){
   
   print "The annotation has been finished\n\n";
   exit 0;
@@ -46,9 +46,6 @@ if(!$hideMessage){
 my $configuration = Config::IniFiles->new(-file => $configFile) or die "Could not open $configFile!";
 
 my $sampleID = $configuration->val("Sample","sampleID");
-my $genePanel = $configuration->val("Sample","genePanel");
-my $genePanelTranscript = glob "$genePanel/*.transcripts.csv";
-
 my $pipelineVersion = $configuration->val("Version", "variantCallingPipelineVersion");
 
 my $scriptPath = $configuration->val("Script", "scriptPath");
@@ -84,28 +81,16 @@ print "\n";
 print REPORT "perl $annovarDir/table_annovar.pl all.filter.avinput $annovarDir/humandb/ --buildver hg19 --outfile allAnnotation --otherinfo --nastring NA --gff3dbfile repeatMasker_hg19_all.gff3 -protocol 'gff3,refGene,phastConsElements46way,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp137,avsift,ljb2_all' --operation 'r,g,r,r,f,f,f,f,f' 2>errTableAnnovarAll\n";
 system "perl $annovarDir/table_annovar.pl all.filter.avinput $annovarDir/humandb/ --buildver hg19 --outfile allAnnotation --otherinfo --nastring NA --gff3dbfile repeatMasker_hg19_all.gff3 -protocol 'gff3,refGene,phastConsElements46way,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp137,avsift,ljb2_all' --operation 'r,g,r,r,f,f,f,f,f' 2>errTableAnnovarAll";
 
-print "Extract variants from candidate gene region ---- ";
-system "date";
-print "\n";
-
-system "$bedDir/intersectBed -wa -a $file -b $genePanelTranscript > all.filter.inCand.temp.vcf";
-system "grep -P \"^#\" $file > vcfHeader.txt";
-system "cat vcfHeader.txt all.filter.inCand.temp.vcf > all.filter.inCand.vcf";
-system "rm all.filter.inCand.temp.vcf";
-system "perl $annovarDir/convert2annovar.pl --format vcf4old --includeinfo --chrmt MT --withzyg all.filter.inCand.vcf > all.filter.inCand.avinput 2>errConvert2annovarInCand";
-system "perl $annovarDir/table_annovar.pl all.filter.inCand.avinput $annovarDir/humandb/ --buildver hg19 --outfile allAnnotationInCand --otherinfo --nastring NA --gff3dbfile repeatMasker_hg19_all.gff3 -protocol 'gff3,refGene,phastConsElements46way,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp137,avsift,ljb2_all' --operation 'r,g,r,r,f,f,f,f,f' 2>errTableAnnovarInCand";
-
-
 print "Start to add in-house db frequency and find the right transcript ----- ";
 system "date";
 print "\n";
 
-print REPORT "perl $scriptPath/steps/refineAnnotation.pl allAnnotationInCand.hg19_multianno.txt $inhDB allAnnotationInCand.hg19_multianno.freq.txt $genePanelTranscript 1\n";
-system "perl $scriptPath/steps/refineAnnotation.pl allAnnotationInCand.hg19_multianno.txt $inhDB allAnnotationInCand.hg19_multianno.freq.txt $genePanelTranscript 1";
+print REPORT "perl $scriptPath/steps/refineAnnotation.pl allAnnotation.hg19_multianno.txt $file $inhDB allAnnotation.hg19_multianno.freq.txt 1\n";
+system "perl $scriptPath/steps/refineAnnotation.pl allAnnotation.hg19_multianno.txt $file $inhDB allAnnotation.hg19_multianno.freq.txt 1";
 
 system "cp allAnnotationInCand.hg19_multianno.freq.txt ../../../060_delivery/";
 
-open QC, ">> ../qcReport.txt" or die;
+open QC, ">> ../../../qcReport.txt" or die;
 # - Number of PF Exonic Variants
 # - the number of novel PF (pass in the filter column) non-synonymous SNPs
 
