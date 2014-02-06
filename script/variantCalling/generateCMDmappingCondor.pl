@@ -33,18 +33,18 @@ print "\nMaking the folder structure in the condor required data structure and g
 
 ##### Get information to find path for tools and necessary files for analysis
 
-print "\nPlease input the full path to the diagnosticBundle, the default is \"/Volumes/data.odin/diagnosticBundle\" if you just press return\n\n";
-my $diagBundle = <>;
-chomp $diagBundle;
-if(!$diagBundle){
-  $diagBundle = "/Volumes/data.odin/diagnosticBundle";
+print "\nPlease input the full path to the researchBundle, the default is \"/Volumes/data.odin/ying/researchBundle\" if you just press return\n\n";
+my $researchBundle = <>;
+chomp $researchBundle;
+if(!$researchBundle){
+  $researchBundle = "/Volumes/data.odin/ying/researchBundle";
 }
 
-print "\nPlease input the full path to the dataDistro, the default is \"$diagBundle/refData/dataDistro_r01_d01_diag\" if you just press return\n\n";
+print "\nPlease input the full path to the dataDistro, the default is \"$researchBundle/refData/dataDistro_r01_d01\" if you just press return\n\n";
 my $dataDistro = <>;
 chomp $dataDistro;
 if(!$dataDistro){
-  $dataDistro = "$diagBundle/refData/dataDistro_r01_d01_diag";
+  $dataDistro = "$researchBundle/refData/dataDistro_r01_d01";
 }
 
 print "\nPlease input the full path to the script folder (git local copy), the default is \"$FindBin::Bin\" if you just press return\n\n";
@@ -55,11 +55,11 @@ if(!$scriptDistro){
 }
 
 
-print "Please input the full path to the software folder, the default is \"$diagBundle/tools\" if you just press return\n\n";
+print "Please input the full path to the software folder, the default is \"$researchBundle/tools\" if you just press return\n\n";
 my $softDistro = <>;
 chomp $softDistro;
 if(!$softDistro){
-  $softDistro = "$diagBundle/tools";
+  $softDistro = "$researchBundle/tools";
 }
 
 
@@ -88,7 +88,6 @@ foreach my $eachSample(@sampleFolders){
 
     my @info = split /-/, $eachSample;
 
-    my $genePanel = $info[-3];
     my $captureKit = $info[-1];
 
     ##### Generate sample configuration file
@@ -100,19 +99,12 @@ foreach my $eachSample(@sampleFolders){
     print PROFILE "runID = $runName\n";
     print PROFILE "project = $project\n";
     print PROFILE "sampleID = $eachSample\n";
-    my $genePanelFolderName = join '_', $genePanel, "OUS", "medGen", "v01", "b37"; 
 
-    my @scriptPath = split /\//, $scriptDistro;
-    pop @scriptPath;
-    pop @scriptPath;
-    pop @scriptPath;
-    my $amgPath = join '/', @scriptPath;
-
-    if(-d "$amgPath/clinicalGenePanels/$genePanelFolderName"){
-      print PROFILE "genePanel = $amgPath/clinicalGenePanels/$genePanelFolderName\n";
-    }else{
-      print "Can not find $amgPath/clinicalGenePanels/$genePanelFolderName for genePanel\n";
-    }
+ #   my @scriptPath = split /\//, $scriptDistro;
+ #   pop @scriptPath;
+ #   pop @scriptPath;
+ #   pop @scriptPath;
+ #   my $amgPath = join '/', @scriptPath;
 
     if($captureKit eq 'Av5'){
 
@@ -126,24 +118,12 @@ foreach my $eachSample(@sampleFolders){
 
     ## variant calling pipeline version
     print PROFILE "\n[Version]\n";
-    my $tempCurrentDir = `pwd`;
-    chomp $tempCurrentDir;
-    chdir($amgPath);
-    my $vcVersion = `git describe --tag`;
-    chomp $vcVersion;
-    $vcVersion =~ s/(.*20\d\d)-.*/$1/;
 
-#    my $versionDiff = `diff $amgPath/.git/refs/tags/$vcVersion $amgPath/.git/refs/heads/dev`;
-    my $versionDiff = `diff $amgPath/.git/refs/tags/$vcVersion $amgPath/.git/refs/heads/newVCpipelineDiag`;
-    chdir($tempCurrentDir);
+#    my $currentTagCommit = `git rev-parse V.05Feb2014`;
+    my $currentHeadCommit = `git rev-parse HEAD`;
+    chomp $currentHeadCommit;
 
-    if(!$versionDiff){
-      $vcVersion =~ s/.*tags\/(.*)/$1/;
-      print PROFILE "variantCallingPipelineVersion = $vcVersion\n";
-    }else{
-      print "Please check the version of pipeline!!\n\n$versionDiff\n";
-      exit;
-    }
+    print PROFILE "variantCallingPipelineVersion = $currentHeadCommit\n";
 
     ## Software information
     print PROFILE "\n[Tool]\n";
@@ -245,14 +225,13 @@ foreach my $eachSample(@sampleFolders){
       print "Can not find $dataDistro/$dataPath for $dataName";
     }
 
-#    my $inhouseDB = glob "$diagBundle/refData/inHouseDB/current/*AFandGF.txt";
-    print PROFILE "inhDB = $diagBundle/refData/inHouseDB/current/variant.combine.filter.20140204.AFandGF.txt\n";
+#    my $inhouseDB = glob "$researchBundle/refData/inHouseDB/current/*AFandGF.txt";
+    print PROFILE "inhDB = $researchBundle/refData/inHouseDB/current/variant.combine.filter.20140204.AFandGF.txt\n";
     print PROFILE "snpFingerPrintingRegion = $amgPath/snpFingerPrinting/intervals/snpFingerPrintingPos.interval_list\n";
 
     ## Script information
     print PROFILE "\n[Script]\n";
     print PROFILE "scriptPath = $scriptDistro\n";
-    print PROFILE "coveragePath = $amgPath/variantcalling/qc/coverage\n";
 
     close PROFILE;
 
