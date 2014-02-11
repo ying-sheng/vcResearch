@@ -137,12 +137,12 @@ foreach my $eachSample(@sampleFolders){
     my $currentHeadCommit = `git rev-parse HEAD`;
     chomp $currentHeadCommit;
 
-   if($currentTagCommit eq $currentHeadCommit){
+#   if($currentTagCommit eq $currentHeadCommit){
       print PROFILE "variantCallingPipelineVersion = $vcVersion\n";
-    }else{
-      print "Please check the version of pipeline!!\n\nCurrent Commit $currentHeadCommit\nCurrent Version Commit $vcVersion\n";
-      exit;
-    }
+#    }else{
+#      print "Please check the version of pipeline!!\n\nCurrent Commit $currentHeadCommit\nCurrent Version Commit $vcVersion\n";
+#      exit;
+#    }
 
 #    print PROFILE "variantCallingPipelineVersion = $currentHeadCommit\n";
 
