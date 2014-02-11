@@ -107,7 +107,7 @@ foreach my $eachSample(@sampleFolders){
     my @scriptPath = split /\//, $scriptDistro;
     pop @scriptPath;
     pop @scriptPath;
-    pop @scriptPath;
+#    pop @scriptPath;
     my $amgPath = join '/', @scriptPath;
 
     if($captureKit eq 'Av5'){
