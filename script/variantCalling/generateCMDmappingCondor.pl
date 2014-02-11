@@ -18,10 +18,10 @@ print "After all the files have been transferred, Input the project name, in thi
 my $project = <>;
 chomp $project;
 
-print "\nInput the run name: \n\n";
+# print "\nInput the run name: \n\n";
 
-my $runName = <>;
-chomp $runName;
+# my $runName = <>;
+# chomp $runName;
 
 my $commandPre = "/data/condor_scripts/submit_align_nsc_V2.1 -r -p -n -q $project"; 
 
@@ -84,6 +84,10 @@ foreach my $eachSample(@sampleFolders){
 
     }
 
+    my $runName = `ls *Read1.qc.pdf`;
+    chomp $runName;
+    $runName = (split /\./, $runName)[0];
+
     chdir("data");
 
     my @info = split /-/, $eachSample;
@@ -100,11 +104,11 @@ foreach my $eachSample(@sampleFolders){
     print PROFILE "project = $project\n";
     print PROFILE "sampleID = $eachSample\n";
 
- #   my @scriptPath = split /\//, $scriptDistro;
- #   pop @scriptPath;
- #   pop @scriptPath;
- #   pop @scriptPath;
- #   my $amgPath = join '/', @scriptPath;
+    my @scriptPath = split /\//, $scriptDistro;
+    pop @scriptPath;
+    pop @scriptPath;
+    pop @scriptPath;
+    my $amgPath = join '/', @scriptPath;
 
     if($captureKit eq 'Av5'){
 
@@ -119,11 +123,30 @@ foreach my $eachSample(@sampleFolders){
     ## variant calling pipeline version
     print PROFILE "\n[Version]\n";
 
-#    my $currentTagCommit = `git rev-parse V.05Feb2014`;
+    my $tempDir = `pwd`;
+    chomp $tempDir;
+    chdir($amgPath);
+
+    my $vcVersion = `git describe --tag`;
+    chomp $vcVersion;
+    $vcVersion =~ s/(.*20\d\d)-.*/$1/;
+
+    my $currentTagCommit = `git rev-parse $vcVersion`;
+    chomp $currentTagCommit;
+
     my $currentHeadCommit = `git rev-parse HEAD`;
     chomp $currentHeadCommit;
 
-    print PROFILE "variantCallingPipelineVersion = $currentHeadCommit\n";
+   if($currentTagCommit eq $currentHeadCommit){
+      print PROFILE "variantCallingPipelineVersion = $vcVersion\n";
+    }else{
+      print "Please check the version of pipeline!!\n\nCurrent Commit $currentHeadCommit\nCurrent Version Commit $vcVersion\n";
+      exit;
+    }
+
+#    print PROFILE "variantCallingPipelineVersion = $currentHeadCommit\n";
+
+    chdir($tempDir);
 
     ## Software information
     print PROFILE "\n[Tool]\n";
