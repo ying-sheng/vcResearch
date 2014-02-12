@@ -53,7 +53,6 @@ my $scriptPath = $configuration->val("Script", "scriptPath");
 my $inhDB = $configuration->val("Data", "inhDB");
 
 my $annovarDir = $configuration->val("Tool","annovar");
-my $bedDir = $configuration->val("Tool", "bedtools");
 
 system "date > start.out";
 system "echo \"The process is started at: \" > reportVarAnnotation.txt";
