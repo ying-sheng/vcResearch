@@ -167,7 +167,7 @@ while(my $ann = <ANN>){
     # VCF_PL_genotypeProbability - 41-4
     # VCF_Info - 39
 
-    print OUT "$allHeader[32]\t$allHeader[33]\t$allHeader[35]\t$allHeader[36]\t$allHeader[6]\t$allHeader[7]\t$allHeader[8]\t$allHeader[9]\t$allHeader[12]\t$allHeader[13]\tintDb_alleleFrequency(",$totalSampleNo*2,")\tintDb_genotypeFrequency($totalSampleNo)\tintDb_filter\t$allHeader[14]\t$allHeader[37]\t$allHeader[38]\tVCF_GT_genotype\tVCF_AD_AlleleDepth\tVCF_DP_depth\t$allHeader[15]\t$allHeader[16]\t$allHeader[17]\t$allHeader[21]\t$allHeader[23]\t$allHeader[25]\t$allHeader[27]\t$allHeader[28]\t$allHeader[29]\t$allHeader[30]\trepeatMasker\t$allHeader[10]\tVCF_GQ_genotypeQuality\tVCF_PL_genotypeProbability\t$allHeader[39]\n";
+    print OUT "$allHeader[32]\t$allHeader[33]\t$allHeader[35]\t$allHeader[36]\t$allHeader[6]\t$allHeader[7]\t$allHeader[8]\t$allHeader[9]\t$allHeader[12]\t$allHeader[13]\tintDb_alleleFrequency(",$totalSampleNo*2,")\tintDb_genotypeFrequency($totalSampleNo)\tintDb_filter\t$allHeader[14]\t$allHeader[37]\t$allHeader[38]\tVCF_GT_genotype\tVCF_AD_AlleleDepth\tVCF_DP_depth\t$allHeader[15]\t$allHeader[16]\t$allHeader[17]\t$allHeader[19]\t$allHeader[21]\t$allHeader[23]\t$allHeader[25]\t$allHeader[27]\t$allHeader[28]\t$allHeader[29]\t$allHeader[30]\trepeatMasker\t$allHeader[10]\tVCF_GQ_genotypeQuality\tVCF_PL_genotypeProbability\t$allHeader[39]\n";
 
 #    splice(@anns, 5,0,"in-dbAL","in-dbGT","in-dbAL_all","in-dbGT_all","in-dbFilter");
 #    $string = join("\t", @anns);
@@ -323,7 +323,7 @@ while(my $ann = <ANN>){
     # VCF_PL_genotypeProbability - 41-4
     # VCF_Info - 39
 
-    print OUT "$anns[32]\t$anns[33]\t$anns[35]\t$anns[36]\t$anns[6]\t$anns[7]\t$anns[8]\t$anns[9]\t$anns[12]\t$anns[13]\t$indbal\t$indbgt\t$indb_filter\t$anns[14]\t$anns[37]\t$anns[38]\t$anns[31]-$g\t", (split /:/, $anns[41])[1], "\t", (split /:/, $anns[41])[2], "\t$anns[15]\t$anns[16]\t$anns[17]\t$anns[21]\t$anns[23]\t$anns[25]\t$anns[27]\t$anns[28]\t$anns[29]\t$anns[30]\t$anns[5]\t$anns[10]\t", (split /:/, $anns[41])[3], "\t", (split /:/, $anns[41])[4], "\t$anns[39]\n";
+    print OUT "$anns[32]\t$anns[33]\t$anns[35]\t$anns[36]\t$anns[6]\t$anns[7]\t$anns[8]\t$anns[9]\t$anns[12]\t$anns[13]\t$indbal\t$indbgt\t$indb_filter\t$anns[14]\t$anns[37]\t$anns[38]\t$anns[31]-$g\t", (split /:/, $anns[41])[1], "\t", (split /:/, $anns[41])[2], "\t$anns[15]\t$anns[16]\t$anns[17]\t$anns[19]\t$anns[21]\t$anns[23]\t$anns[25]\t$anns[27]\t$anns[28]\t$anns[29]\t$anns[30]\t$anns[5]\t$anns[10]\t", (split /:/, $anns[41])[3], "\t", (split /:/, $anns[41])[4], "\t$anns[39]\n";
 
 #"$anns[6]\t$anns[7]\t$anns[8]\t$anns[9]\t$anns[12]\t$anns[13]\tintDb_alleleFrequency(88)\tintDb_genotypeFrequency(44)\tintDb_filter\t$anns[14]\tQUAL\tFILTER\tGT_genotype\tAD_AlleleDepth\tDP_depth\tChr\tStart\tRef\tAlt\t$anns[15]\t$anns[16]\t$anns[18]\t$anns[20]\t$anns[22]\t$anns[24]\t$anns[26]\trepeatMasker\t$anns[11]\t$anns[10]\tGQ_genotypeQuality\tPL_genotypeProbability\tvcfInfo\n";
 
@@ -342,3 +342,4 @@ while(my $ann = <ANN>){
 
 }
 close ANN;
+close OUT;

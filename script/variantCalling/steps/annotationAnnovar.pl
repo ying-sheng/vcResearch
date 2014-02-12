@@ -87,7 +87,7 @@ print "\n";
 print REPORT "perl $scriptPath/steps/refineAnnotation.pl allAnnotation.hg19_multianno.txt $file $inhDB allAnnotation.hg19_multianno.freq.txt 1\n";
 system "perl $scriptPath/steps/refineAnnotation.pl allAnnotation.hg19_multianno.txt $file $inhDB allAnnotation.hg19_multianno.freq.txt 1";
 
-system "cp allAnnotationInCand.hg19_multianno.freq.txt ../../../060_delivery/";
+system "cp allAnnotation.hg19_multianno.freq.txt ../../../060_delivery/";
 
 open QC, ">> ../../../qcReport.txt" or die;
 # - Number of PF Exonic Variants
