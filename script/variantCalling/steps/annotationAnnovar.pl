@@ -24,8 +24,19 @@ print "\nChecking whether the following steps have been done ......\n\n\tannotat
 
 if(-e "allAnnotation.hg19_multianno.txt"){
   
-  print "The annotation has been finished\n\n";
-  exit 0;
+  my $lineNo = `wc -l allAnnotation.hg19_multianno.txt`;
+  chomp $lineNo;
+  $lineNo =~ s/^ +(.*)/$1/;
+  $lineNo =~ s/(.*) .*/$1/;
+
+  if($lineNo > 1){
+    print "The annotation has been finished\n\n";
+    exit 0;
+  }else{
+
+    print "The annotation need to be performed\n";
+
+  }
   
 }else{
   
