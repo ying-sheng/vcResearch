@@ -132,8 +132,8 @@ if($bInHouse == 1){
 
   chdir("040_coverageIn-house");
 
-  print REPORT "$bedtoolsDir/coverageBed -abam $bamFile -b $wesCoverageRegion -d > eachBase.1-based.coverage";
-  print REPORT "bash $FindBin::Bin/coverageWES.bash";
+  print REPORT "$bedtoolsDir/coverageBed -abam $bamFile -b $wesCoverageRegion -d > eachBase.1-based.coverage\n";
+  print REPORT "bash $FindBin::Bin/coverageWES.bash\n";
 
   system "$bedtoolsDir/coverageBed -abam $bamFile -b $wesCoverageRegion -d > eachBase.1-based.coverage";
   system "bash $FindBin::Bin/coverageWES.bash";

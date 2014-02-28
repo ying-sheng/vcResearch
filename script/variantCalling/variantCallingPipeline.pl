@@ -395,7 +395,8 @@ my $variantCallingCode = join '', $bVarCall, $bVarFilter, "1";
 
 if(($bVarCall == 2) and ($bVarFilter == 2)){
 
-  print "\nAll steps are finished successfully\nPlease manually check whether the SNP fingerprinting sites are called\n\n";
+#  print "\nAll steps are finished successfully\nPlease manually check whether the SNP fingerprinting sites are called\n\n";
+  print "\nAll steps are finished successfully\n\n";
 
 }else{
 
@@ -420,15 +421,15 @@ chdir("../../../");
 
 ##### Doing SNP finger printing checking automatically
 
-print "########### Comparing snp finger printing results betwen HTS and Taqman ......\n\n";
+# print "########### Comparing snp finger printing results betwen HTS and Taqman ......\n\n";
 
-my $amgPath = $scriptPath;
-$amgPath =~ s/(.*\/script\/amg).*/$1/;
+# my $amgPath = $scriptPath;
+# $amgPath =~ s/(.*\/script\/amg).*/$1/;
 
-open REPORT, "> 070_QC/snpFingerPrintingReport.txt" or die;
-print REPORT "Running this under the root of Sample folder\n\npython $amgPath/fingerprinting/MergeResults.py\n";
-system "python $amgPath/fingerprinting/testData/MergeResults.py";
-system "cp 070_QC/snp.raw.snpFingerPrintingTest*report* 060_delivery";
+# open REPORT, "> 070_QC/snpFingerPrintingReport.txt" or die;
+# print REPORT "Running this under the root of Sample folder\n\npython $amgPath/fingerprinting/MergeResults.py\n";
+# system "python $amgPath/fingerprinting/testData/MergeResults.py";
+# system "cp 070_QC/snp.raw.snpFingerPrintingTest*report* 060_delivery";
 
 print "The script is finished\n";
 
