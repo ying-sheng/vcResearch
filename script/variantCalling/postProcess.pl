@@ -19,9 +19,9 @@ foreach my $eachFolder (@folder){
   
   my $runID = $configuration->val("Sample","runID");
   my $sampleID = $configuration->val("Sample","sampleID");
-  my $genePanel = $configuration->val("Sample","genePanel");
-  my $genePanelTranscript = glob "$genePanel/*.transcripts.csv";
-  $genePanelTranscript =~ s/.*\/(.*)$/$1/;
+#  my $genePanel = $configuration->val("Sample","genePanel");
+#  my $genePanelTranscript = glob "$genePanel/*.transcripts.csv";
+#  $genePanelTranscript =~ s/.*\/(.*)$/$1/;
   my $pipelineVersion = $configuration->val("Version", "variantCallingPipelineVersion");
 
   print "The result folder (060_delivery) should contain the following files:\n\nBAM file:\nall.realigned.markDup.baseQreCali.bam\nall.realigned.markDup.baseQreCali.bai\n\nAnnotation variant file:\nallAnnotationInCand.hg19_multianno.freq.tsv\n\nCoverage results:\ncoverage_qc_exon.tsv\ncoverage_qc_transcript.tsv\nlow_coverage.tsv\n\nSNP fingerprinting test results from HTS:\nsnp.raw.snpFingerPrintingTest.vcf\nsnp.raw.snpFingerPrintingTest.vcf.idx\n\n";
@@ -117,7 +117,7 @@ foreach my $eachFolder (@folder){
       
     }
     
-    system "rm tempHeader.txt";
+    system "rm *tempHeader.txt";
 #    system "ln -s $finalBam ../020_refineAlignment/030_BQRecalGATK/all.realigned.markDup.baseQreCali.bam";
 #    system "ln -s $finalBai ../020_refineAlignment/030_BQRecalGATK/all.realigned.markDup.baseQreCali.bai";
     
