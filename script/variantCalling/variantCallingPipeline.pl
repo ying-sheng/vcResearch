@@ -311,7 +311,7 @@ if(!(-d "040_coverageIn-house")){
   
   chdir("040_coverageIn-house");
 
-  if(!(-e "coverage_per_cdExon.10.tsv")){
+  if(!(-e "coverage_per_cdExon.10.tsv") or (-z "coverage_per_cdExon.10.tsv")){
     $bInHouse = 1;
   }
 
