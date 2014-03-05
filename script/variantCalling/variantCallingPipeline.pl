@@ -45,6 +45,12 @@ if(!(-d "060_delivery")){
   system "mkdir 060_delivery";
 }
 
+if(-e "qcReport.txt"){
+
+  system "rm qcReport.txt";
+
+}
+
 ##### Main inputs and options
 
 print "########### Get main inputs and options from profileFile.txt or command line .....\n\n"; # need: run name, project name, sample ID and capture kits

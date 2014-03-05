@@ -78,9 +78,9 @@ foreach my $eachFolder (@folder){
     
     chdir("$eachFolder/060_delivery");
 
-    open OUT, "tempHeader.txt" or die;
+    open OUT, ">tempHeader.txt" or die;
     print OUT "# $sampleID\n";
-    print OUT "# $gp\n";
+#    print OUT "# $gp\n";
     print OUT "# Variant Calling Pipeline is $pipelineVersion\n\n\n";
     close OUT;
 
