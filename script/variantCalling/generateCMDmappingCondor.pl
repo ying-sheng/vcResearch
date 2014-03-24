@@ -25,7 +25,12 @@ chomp $project;
 
 my $commandPre = "/data/condor_scripts/submit_align_nsc_V2.1 -r -p -n -q $project"; 
 
-chdir("/condor_sh/projects/$project");
+print "Please input the absolute path to condor_sh/projects\n\n";
+
+my $condor_sh = <>;
+chomp $condor_sh;
+
+chdir("$condor_sh/$project");
 
 my @sampleFolders = glob "Sample*";
 
