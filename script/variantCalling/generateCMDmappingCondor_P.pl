@@ -263,6 +263,11 @@ foreach my $eachSample(@sampleFolders){
 
 #    my $inhouseDB = glob "$researchBundle/refData/inHouseDB/current/*AFandGF.txt";
     print PROFILE "inhDB = $researchBundle/refData/inHouseDB/current/variant.combine.filter.20140204.AFandGF.txt\n";
+
+    ######################### Might be changed the way to add when dataRepo has hgmd data ######################
+    print PROFILE "hgmd = $researchBundle/refData/hgmd/2013.3\n";
+
+
     print PROFILE "snpFingerPrintingRegion = $amgPath/snpFingerPrinting/intervals/snpFingerPrintingPos.interval_list\n";
 
     ## Script information
