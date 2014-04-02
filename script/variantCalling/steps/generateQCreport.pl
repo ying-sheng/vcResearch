@@ -19,8 +19,19 @@ if(!$hideMessage){
 
 }
 
-my $configuration = Config::IniFiles->new(-file => $configFile) or die "Could not open $configFile!";
-my $dbsnpFile = $configuration->val("Data","dbSNP137");
+my ($configuration, $dbsnpFile);
+
+if($configFile){
+
+  $configuration = Config::IniFiles->new(-file => $configFile) or die "Could not open $configFile!";
+  $dbsnpFile = $configuration->val("Data","dbSNP137");
+
+}else{
+
+  $dbsnpFile = `grep -P '^--dbsnp' 040_variantCalling/reportVarCalFilter.txt`;
+  chomp $dbsnpFile;
+  $dbsnpFile =~ s/.*--dbsnp.*(\/V.*)/$1/;
+}
 
 chdir("030_postAlignQC");
 
@@ -50,55 +61,109 @@ system "grep STANDARD_DEVIATION 020_collectInsertSizeMetrics/collectInsertSizeMe
 system "grep MEAN_TARGET_COVERAGE 030_calculateHsMetrics/calculateHsMetrics.easy.txt >> ../qcReport.txt";
 system "grep PCT_TARGET_BASES_ 030_calculateHsMetrics/calculateHsMetrics.easy.txt >> ../qcReport.txt";
 
-chdir("../040_variantCalling");
+if(-d "../gatkUG_2.8.1"){
 
-my $fDir = "../050_postVarCalProcess/gatk/010_qualityFiltration";
-my $tranchFile = "$fDir/snp.vqsr.output.tranches";
-my $tsFilterLevel = "99";
+  chdir("../gatkUG_2.8.1");
 
-open QC, ">> ../qcReport.txt" or die;
-print QC "\n##########\n\nQuality of Variant Calling\n\n##########\n\n";
+  my $tsFilterLevel = 99;
 
-my $noPFSNPs = `grep -v '^#' $fDir/snp.recalibrated.filtered.vcf | cut -f7 |grep -c 'PASS'`;
-chomp $noPFSNPs;
+  open QC, ">> ../qcReport.txt" or die;
+  print QC "\n##########\n\nQuality of Variant Calling\n\n##########\n\n";
 
-my $noKnownPFSNPs = `grep -v '^#' $fDir/snp.recalibrated.filtered.vcf | grep 'PASS' | cut -f3 |grep -c 'rs'`;
-chomp $noKnownPFSNPs;
+  my $noPFSNPs = `grep -v '^#' snp.recalibrated.filtered.vcf | cut -f7 |grep -c 'PASS'`;
+  chomp $noPFSNPs;
+  
+  my $noKnownPFSNPs = `grep -v '^#' snp.recalibrated.filtered.vcf | grep 'PASS' | cut -f3 |grep -c 'rs'`;
+  chomp $noKnownPFSNPs;
+  
+  my $knownTTratio = `grep '^99.00' $tranchFile |cut -f4 -d','`;
+  chomp $knownTTratio;
+  
+  my $novalTTratio = `grep '^99.00' $tranchFile |cut -f5 -d','`;
+  chomp $novalTTratio;
+  
+  my $noPFhetSNP = `grep -v '^#' snp.recalibrated.filtered.vcf | grep 'PASS' | cut -f10 |cut -f1 -d':'|grep -vc '1/1'`;
+  chomp $noPFhetSNP;
+  
+  my $noPFhomSNP = `grep -v '^#' snp.recalibrated.filtered.vcf | grep 'PASS' | cut -f10 |cut -f1 -d':'|grep -c '1/1'`;
+  chomp $noPFhomSNP;
+  
+  print QC "Total No. of PF SNPs (No. of known PF SNPs) : $noPFSNPs ($noKnownPFSNPs)\n";
+  $dbsnpFile =~ s/.*\/(.*)/$1/;
+  print QC "% in dbSNP build ($dbsnpFile) : ", $noKnownPFSNPs/$noPFSNPs, "\n";
+  print QC "known PF SNPs Ti/Tv ratio (--ts_filter_level $tsFilterLevel) : $knownTTratio\n";
+  print QC "noval PF SNPs Ti/Tv ratio (--ts_filter_level $tsFilterLevel) : $novalTTratio\n";
+  print QC "PF SNP het/hom ratio : ", $noPFhetSNP/$noPFhomSNP, "\n";
+  
+  # - Number of PF Exonic Variants
+  # - the number of novel PF (pass in the filter column) non-synonymous SNPs
 
-my $knownTTratio = `grep '^99.00' $tranchFile |cut -f4 -d','`;
-chomp $knownTTratio;
+  my $noPFexonicVariants = `grep 'exonic' annotation/allAnnotation.hg19_multianno.txt | grep 'PASS' |cut -f7|grep -v 'ncRNA_exonic'|wc -l`;
+  chomp $noPFexonicVariants;
+  
+  my $noPFnonsynonymousSNP = `grep 'PASS' annotation/allAnnotation.hg19_multianno.txt |grep 'nonsynonymous'|cut -f15|grep -c 'NA'`;
+  chomp $noPFnonsynonymousSNP;
+  
+  print QC "No. of PF Exonic Variants : $noPFexonicVariants\n";
+  print QC "No. novel PF non-synonymous SNPs : $noPFnonsynonymousSNP\n";
+  
+  close QC;
 
-my $novalTTratio = `grep '^99.00' $tranchFile |cut -f5 -d','`;
-chomp $novalTTratio;
 
-my $noPFhetSNP = `grep -v '^#' $fDir/snp.recalibrated.filtered.vcf | grep 'PASS' | cut -f10 |cut -f1 -d':'|grep -vc '1/1'`;
-chomp $noPFhetSNP;
 
-my $noPFhomSNP = `grep -v '^#' $fDir/snp.recalibrated.filtered.vcf | grep 'PASS' | cut -f10 |cut -f1 -d':'|grep -c '1/1'`;
-chomp $noPFhomSNP;
+}else{
 
-print QC "Total No. of PF SNPs (No. of known PF SNPs) : $noPFSNPs ($noKnownPFSNPs)\n";
-$dbsnpFile =~ s/.*\/(.*)/$1/;
-print QC "% in dbSNP build ($dbsnpFile) : ", $noKnownPFSNPs/$noPFSNPs, "\n";
-print QC "known PF SNPs Ti/Tv ratio (--ts_filter_level $tsFilterLevel) : $knownTTratio\n";
-print QC "noval PF SNPs Ti/Tv ratio (--ts_filter_level $tsFilterLevel) : $novalTTratio\n";
-print QC "PF SNP het/hom ratio : ", $noPFhetSNP/$noPFhomSNP, "\n";
+  chdir("../040_variantCalling");
 
-close QC;
+  my $fDir = "../050_postVarCalProcess/gatk/010_qualityFiltration";
+  my $tranchFile = "$fDir/snp.vqsr.output.tranches";
+  my $tsFilterLevel = "99";
 
-chdir("../050_postVarCalProcess/gatk/020_annovarAnnotation");
+  open QC, ">> ../qcReport.txt" or die;
+  print QC "\n##########\n\nQuality of Variant Calling\n\n##########\n\n";
 
-open QC, ">> ../../../qcReport.txt" or die;
-# - Number of PF Exonic Variants
-# - the number of novel PF (pass in the filter column) non-synonymous SNPs
+  my $noPFSNPs = `grep -v '^#' $fDir/snp.recalibrated.filtered.vcf | cut -f7 |grep -c 'PASS'`;
+  chomp $noPFSNPs;
+  
+  my $noKnownPFSNPs = `grep -v '^#' $fDir/snp.recalibrated.filtered.vcf | grep 'PASS' | cut -f3 |grep -c 'rs'`;
+  chomp $noKnownPFSNPs;
+  
+  my $knownTTratio = `grep '^99.00' $tranchFile |cut -f4 -d','`;
+  chomp $knownTTratio;
+  
+  my $novalTTratio = `grep '^99.00' $tranchFile |cut -f5 -d','`;
+  chomp $novalTTratio;
+  
+  my $noPFhetSNP = `grep -v '^#' $fDir/snp.recalibrated.filtered.vcf | grep 'PASS' | cut -f10 |cut -f1 -d':'|grep -vc '1/1'`;
+  chomp $noPFhetSNP;
+  
+  my $noPFhomSNP = `grep -v '^#' $fDir/snp.recalibrated.filtered.vcf | grep 'PASS' | cut -f10 |cut -f1 -d':'|grep -c '1/1'`;
+  chomp $noPFhomSNP;
+  
+  print QC "Total No. of PF SNPs (No. of known PF SNPs) : $noPFSNPs ($noKnownPFSNPs)\n";
+  $dbsnpFile =~ s/.*\/(.*)/$1/;
+  print QC "% in dbSNP build ($dbsnpFile) : ", $noKnownPFSNPs/$noPFSNPs, "\n";
+  print QC "known PF SNPs Ti/Tv ratio (--ts_filter_level $tsFilterLevel) : $knownTTratio\n";
+  print QC "noval PF SNPs Ti/Tv ratio (--ts_filter_level $tsFilterLevel) : $novalTTratio\n";
+  print QC "PF SNP het/hom ratio : ", $noPFhetSNP/$noPFhomSNP, "\n";
+  
+  close QC;
 
-my $noPFexonicVariants = `grep 'exonic' allAnnotation.hg19_multianno.txt | grep 'PASS' |cut -f7|grep -v 'ncRNA_exonic'|wc -l`;
-chomp $noPFexonicVariants;
+  chdir("../050_postVarCalProcess/gatk/020_annovarAnnotation");
 
-my $noPFnonsynonymousSNP = `grep 'PASS' allAnnotation.hg19_multianno.txt |grep 'nonsynonymous'|cut -f15|grep -c 'NA'`;
-chomp $noPFnonsynonymousSNP;
+  open QC, ">> ../../../qcReport.txt" or die;
+  # - Number of PF Exonic Variants
+  # - the number of novel PF (pass in the filter column) non-synonymous SNPs
 
-print QC "No. of PF Exonic Variants : $noPFexonicVariants\n";
-print QC "No. novel PF non-synonymous SNPs : $noPFnonsynonymousSNP\n";
-
-close QC;
+  my $noPFexonicVariants = `grep 'exonic' allAnnotation.hg19_multianno.txt | grep 'PASS' |cut -f7|grep -v 'ncRNA_exonic'|wc -l`;
+  chomp $noPFexonicVariants;
+  
+  my $noPFnonsynonymousSNP = `grep 'PASS' allAnnotation.hg19_multianno.txt |grep 'nonsynonymous'|cut -f15|grep -c 'NA'`;
+  chomp $noPFnonsynonymousSNP;
+  
+  print QC "No. of PF Exonic Variants : $noPFexonicVariants\n";
+  print QC "No. novel PF non-synonymous SNPs : $noPFnonsynonymousSNP\n";
+  
+  close QC;
+  
+}
