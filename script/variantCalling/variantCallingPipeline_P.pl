@@ -421,7 +421,7 @@ chdir("../050_postVarCalProcess/gatk/020_annovarAnnotation");
 
 print "########### Variant annotation .....\n\n";
 
-system "perl $scriptPath/steps/annotationAnnovar.pl ../010_qualityFiltration/all.filter.vcf $configFile 1";
+system "perl $scriptPath/steps/annotationAnnovar_P.pl ../010_qualityFiltration/all.filter.vcf $configFile 1";
 
 chdir("../../../");
 
