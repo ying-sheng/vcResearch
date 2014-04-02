@@ -1,13 +1,13 @@
 #!/usr/bin/perl -w
 use strict;
 
-my $hgmdDir = shift;
+my ($inputVCF, $outputFile, $hgmdDir) = @ARGV;
 
 my @annotationFiles = glob "$hgmdDir/*.vcf";
 
 my $tagExpression;
 
-my $inputVCF = "all.filter.vcf";
+# my $inputVCF = "all.filter.vcf";
 
 if(-d "hgmd.vcf"){
 
@@ -42,3 +42,7 @@ foreach my $eachAnn (@annotationFiles){
   $inputVCF = $resultVCF;
 
 }
+
+print "Will change $inputVCF to $outputFile\n\n";
+
+system "mv $inputVCF $outputFile";
