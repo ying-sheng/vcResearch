@@ -92,8 +92,8 @@ print "Start to do annotation by annovar ----- ";
 system "date";
 print "\n";
 
-print REPORT "perl $annovarDir/table_annovar.pl all.filter.hgmd.avinput $annovarDir/humandb/ --buildver hg19 --outfile allAnnotation --otherinfo --nastring NA --gff3dbfile repeatMasker_hg19_all.gff3 -protocol 'gff3,refGene,phastConsElements46way,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp137,avsift,ljb2_all,clinvar_20140211,ljb23_metalr,ljb23_metasvm' --operation 'r,g,r,r,f,f,f,f,f,f,f,f' 2>errTableAnnovarAll\n\n";
-system "perl $annovarDir/table_annovar.pl all.filter.hgmd.avinput $annovarDir/humandb/ --buildver hg19 --outfile allAnnotation --otherinfo --nastring NA --gff3dbfile repeatMasker_hg19_all.gff3 -protocol 'gff3,refGene,phastConsElements46way,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp137,avsift,ljb2_all,clinvar_20140211,ljb23_metalr,ljb23_metasvm' --operation 'r,g,r,r,f,f,f,f,f,f,f,f' 2>errTableAnnovarAll";
+print REPORT "perl $annovarDir/table_annovar.pl all.filter.hgmd.avinput $annovarDir/humandb/ --buildver hg19 --outfile allAnnotation --otherinfo --nastring NA --gff3dbfile repeatMasker_hg19_all.gff3 -protocol 'gff3,refGene,phastConsElements46way,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp137,avsift,ljb2_all,clinvar_20140211,ljb23_metalr,ljb23_metasvm,caddgt10' --operation 'r,g,r,r,f,f,f,f,f,f,f,f,f' 2>errTableAnnovarAll\n\n";
+system "perl $annovarDir/table_annovar.pl all.filter.hgmd.avinput $annovarDir/humandb/ --buildver hg19 --outfile allAnnotation --otherinfo --nastring NA --gff3dbfile repeatMasker_hg19_all.gff3 -protocol 'gff3,refGene,phastConsElements46way,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp137,avsift,ljb2_all,clinvar_20140211,ljb23_metalr,ljb23_metasvm,caddgt10' --operation 'r,g,r,r,f,f,f,f,f,f,f,f,f' 2>errTableAnnovarAll";
 
 print REPORT "Do refinement and reformat, add in-house db frequency\n\n";
 print REPORT "perl $scriptPath/steps/refineHGMD.pl allAnnotation.hg19_multianno.txt hgmd.vcf > allAnnotation.hg19_multianno.hgmd.txt\n";
