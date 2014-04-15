@@ -6,8 +6,9 @@ use Config::IniFiles;
 
 print "\n\n#######################\n\n\nThe script you are running now and all the scripts calling by the script are only for Research purpose and for no other purpose.\n\n\n#######################\n\n\n";
 
-my $configFile = shift;
+my ($configFile, $bqsr) = @ARGV;
 
+# if $bqsr, means the input bam file has gone through BQSR, need to convert base quality score
 # $bamFile : a file with all the absolute path of WES BAM files (e.g. samples.txt)
 # $regionFile : a file with all the regions which want to extract reads (e.g. tsc12.bed), in format chr:start-end and 1-based
 # $configFile : all the locations of ref files, tools
@@ -59,9 +60,18 @@ while(my $bam = <BAM>){
   # Extract reads in the chosen regions
   my $extractBamFile = join '.', $sampleID, "region", "bam";
   print EXT "$samtoolsDir/samtools view -b -L $regionFile $bamFile > $extractBamFile\n";
+
+
   # Convert back the recalibrated base quality to original base quality
   my $oqBamFile = join '.', $sampleID, "region", "OQ", "bam";
-  print EXT "java -Xmx4g -jar $picardDir/RevertSam.jar INPUT=$extractBamFile OUTPUT=$oqBamFile RESTORE_ORIGINAL_QUALITIES=TRUE SORT_ORDER=coordinate CREATE_INDEX=TRUE 2>errRevertSam_$sampleID\n";
+  
+  if($bqsr){
+    print EXT "java -Xmx4g -jar $picardDir/RevertSam.jar INPUT=$extractBamFile OUTPUT=$oqBamFile RESTORE_ORIGINAL_QUALITIES=TRUE SORT_ORDER=coordinate CREATE_INDEX=TRUE 2>errRevertSam_$sampleID\n";
+  }else{
+    $oqBamFile = $extractBamFile;
+  }
+
+
   # Convert back from BAM to FASTQ files
   my $read1File = join '.', $sampleID, "region", "R1", "fastq";
   my $read2File = join '.', $sampleID, "region", "R2", "fastq";
