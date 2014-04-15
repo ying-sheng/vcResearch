@@ -4,7 +4,7 @@ use strict;
 my ($annotationFile, $hgmdFile) = @ARGV;
 
 # This script will do the following:
-# - check the allele match for SNVs (not for multi-allelic sites), if not match, remove the HGMD annotations
+# - check the allele match for SNVs (not for multi-allelic sites), if not match, remove the HGMD annotations - removed
 # - if there are multiple HGMD record for one VCF entry, merge them together
 
 
@@ -39,8 +39,8 @@ while(my $anno = <ANNO>){
   my @items = split /\t/, $anno;
 
   ## Check if the VCF entry has HGMD annotation, 
-  ## Check allele match (only for SNPs)
-  ## remove it from info field, add in 6 additional column
+  ## Check allele match (only for SNPs) - removed
+  ## remove it from info field, add in 13 additional column
   ## merge multiple HGMD records for one VCF entry
 
   if($anno =~ /HGMD/){
@@ -82,7 +82,8 @@ while(my $anno = <ANNO>){
 
 #    }
 
-    my @subTypes = ("amino", "acc_num","disease", "omimid", "tag", "comments", "pmid", "location", "locref", "deletion", "insertion", "score","type","wildtype");
+#    my @subTypes = ("amino", "acc_num","disease", "omimid", "tag", "comments", "pmid", "location", "locref", "deletion", "insertion", "score","type","wildtype");
+    my @subTypes = ("amino", "acc_num","disease", "omimid", "tag", "comments", "pmid", "location", "locref", "deletion", "insertion");
 
     my %final;
     my $v_tempRef = split //, $vRef;
@@ -93,89 +94,90 @@ while(my $anno = <ANNO>){
       my $hgmd_tempRef = split //, $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"ref"};
       my $hgmd_tempAlt = split //, $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"};
 
-      if(($v_tempRef > 1) or ($v_tempAlt > 1) or ($hgmd_tempRef > 1) or ($hgmd_tempAlt > 1)){ # if the variation is indels or HGMD is indels, without checking of allele match
+#      if(($v_tempRef > 1) or ($v_tempAlt > 1) or ($hgmd_tempRef > 1) or ($hgmd_tempAlt > 1)){ # if the variation is indels or HGMD is indels, without checking of allele match
 	
-	foreach my $eachSubTypes (@subTypes){
+      foreach my $eachSubTypes (@subTypes){
 
-	  if(!($hgmdID{$typeID}->{$eachSubTypes})){
-	    $hgmdID{$typeID}->{$eachSubTypes} = "NA";
-	  }
-
-	  if($final{$eachSubTypes}){
-	    $final{$eachSubTypes} = join ';', $final{$eachSubTypes}, $hgmdID{$typeID}->{$eachSubTypes};
-	  }else{
-	    $final{$eachSubTypes} = $hgmdID{$typeID}->{$eachSubTypes};
-	  }
-
+	if(!($hgmdID{$typeID}->{$eachSubTypes})){
+	  $hgmdID{$typeID}->{$eachSubTypes} = "NA";
 	}
 
-	if($final{"change"}){
-	  $final{"change"} = join ';', $final{"change"}, join ('', $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"ref"}, "->", $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"});
+	if($final{$eachSubTypes}){
+	  $final{$eachSubTypes} = join ';', $final{$eachSubTypes}, $hgmdID{$typeID}->{$eachSubTypes};
 	}else{
-	  $final{"change"} = join ('', $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"ref"}, "->", $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"});
+	  $final{$eachSubTypes} = $hgmdID{$typeID}->{$eachSubTypes};
 	}
 
-	if($final{"gt"}){
-	  $final{"gt"} = join ';', $final{"gt"}, $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"gt"};
-	}else{
-	  $final{"gt"} = $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"gt"};
-	}
+      }
 
-      }elsif(($v_tempRef == 1) and ($v_tempAlt == 1) and ($hgmd_tempRef == 1) and ($hgmd_tempAlt == 1)){
+      if($final{"change"}){
+	$final{"change"} = join ';', $final{"change"}, join ('', $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"ref"}, "->", $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"});
+      }else{
+	$final{"change"} = join ('', $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"ref"}, "->", $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"});
+      }
 
-	if($vAlt eq $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"}){
+      if($final{"gt"}){
+	$final{"gt"} = join ';', $final{"gt"}, $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"gt"};
+      }else{
+	$final{"gt"} = $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"gt"};
+      }
 
-	  foreach my $eachSubTypes (@subTypes){
+    # }elsif(($v_tempRef == 1) and ($v_tempAlt == 1) and ($hgmd_tempRef == 1) and ($hgmd_tempAlt == 1)){
 
-	    if(!($hgmdID{$typeID}->{$eachSubTypes})){
-	      $hgmdID{$typeID}->{$eachSubTypes} = "NA";
-	    }
+#	if($vAlt eq $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"}){
 
-	    if($final{$eachSubTypes}){
-	      $final{$eachSubTypes} = join ';', $final{$eachSubTypes}, $hgmdID{$typeID}->{$eachSubTypes};
-	    }else{
-	      $final{$eachSubTypes} = $hgmdID{$typeID}->{$eachSubTypes};
-	    }
+#	  foreach my $eachSubTypes (@subTypes){
 
-	  }
+#	    if(!($hgmdID{$typeID}->{$eachSubTypes})){
+#	      $hgmdID{$typeID}->{$eachSubTypes} = "NA";
+#	    }
 
-	  if($final{"change"}){
-	    $final{"change"} = join ';', $final{"change"}, join ('', $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"ref"}, "->", $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"});
-	  }else{
-	    $final{"change"} = join ('', $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"ref"}, "->", $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"});
-	  }
+#	    if($final{$eachSubTypes}){
+#	      $final{$eachSubTypes} = join ';', $final{$eachSubTypes}, $hgmdID{$typeID}->{$eachSubTypes};
+#	    }else{
+#	      $final{$eachSubTypes} = $hgmdID{$typeID}->{$eachSubTypes};
+#	    }
 
-	  if($final{"gt"}){
-	    $final{"gt"} = join ';', $final{"gt"}, $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"gt"};
-	  }else{
-	    $final{"gt"} = $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"gt"};
-	  }
+#	  }
 
-	}else{
+#	  if($final{"change"}){
+#	    $final{"change"} = join ';', $final{"change"}, join ('', $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"ref"}, "->", $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"});
+#	  }else{
+#	    $final{"change"} = join ('', $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"ref"}, "->", $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"alt"});
+#	  }
 
-	  foreach my $eachSubTypes (@subTypes){
+#	  if($final{"gt"}){
+#	    $final{"gt"} = join ';', $final{"gt"}, $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"gt"};
+#	  }else{
+#	    $final{"gt"} = $hgmdV{$hgmdID{$typeID}->{"acc_num"}}->{"gt"};
+#	  }
 
-	    $final{$eachSubTypes} = "NA";
+#	}else{
+
+#	  foreach my $eachSubTypes (@subTypes){
+
+#	    $final{$eachSubTypes} = "NA";
 	    
-	  }
+#	  }
 
-	  $final{"change"} = "NA";
+#	  $final{"change"} = "NA";
 
-	  $final{"gt"} = "NA";
+#	  $final{"gt"} = "NA";
 
 
 #	  print "\n";
 
-	} # ending for allele not match of SNPs
+#	} # ending for allele not match of SNPs
 
-      } # ending for SNPs
+#      } # ending for SNPs
 
     } # ending for each hgmd files
 
     # if there has HGMD annotations
 # ("amino", "acc_num","disease", "omimid", "tag", "comments", "pmid", "location", "locref", "deletion", "insertion", "score","type","wildtype");
 
-    splice @items,$otherinfoIndex,0,$final{"amino"}, $final{"gt"}, $final{"acc_num"},$final{"disease"},$final{"omimid"}, $final{"tag"}, $final{"comments"}, $final{"pmid"}, $final{"location"}, $final{"locref"}, $final{"deletion"}, $final{"insertion"}, $final{"change"},$final{"score"},$final{"type"},$final{"wildtype"};
+#    splice @items,$otherinfoIndex,0,$final{"amino"}, $final{"gt"}, $final{"acc_num"},$final{"disease"},$final{"omimid"}, $final{"tag"}, $final{"comments"}, $final{"pmid"}, $final{"location"}, $final{"locref"}, $final{"deletion"}, $final{"insertion"}, $final{"change"},$final{"score"},$final{"type"},$final{"wildtype"};
+    splice @items,$otherinfoIndex,0,$final{"amino"}, $final{"gt"}, $final{"acc_num"},$final{"disease"},$final{"omimid"}, $final{"tag"}, $final{"comments"}, $final{"pmid"}, $final{"location"}, $final{"locref"}, $final{"deletion"}, $final{"insertion"}, $final{"change"};
     print join("\t", @items), "\n";
 #    print "\n";
 
@@ -190,11 +192,11 @@ while(my $anno = <ANNO>){
 
     }
 
-    splice @items,$otherinfoIndex,0,"HGMD.amino", "HGMD.GT", "HGMD.acc_num", "HGMD.disease", "HGMD.omimid", "HGMD.tag", "HGMD.comments", "HGMD.pmid", "HGMD.location", "HGMD.locref", "HGMD.deletion", "HGMD.insertion", "HGMD.alleleChange", "HGMD.score", "HGMD.type", "HGMD.wildtype";
+    splice @items,$otherinfoIndex,0,"HGMD.amino", "HGMD.GT", "HGMD.acc_num", "HGMD.disease", "HGMD.omimid", "HGMD.tag", "HGMD.comments", "HGMD.pmid", "HGMD.location", "HGMD.locref", "HGMD.deletion", "HGMD.insertion", "HGMD.alleleChange";
     print join("\t", @items), "\n";
 
   }else{ # if no HGMD annotation
-    splice @items,$otherinfoIndex,0,"NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA";
+    splice @items,$otherinfoIndex,0,"NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA";
     print join("\t", @items), "\n";
   }
 
