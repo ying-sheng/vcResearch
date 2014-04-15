@@ -135,11 +135,11 @@ while(my $ann = <ANN>){
   if($ann =~ /Chr/){
 
     # index with the first index as 0
-
-    # VCF Chr - 52
-    # VCF Start - 53
-    # VCF Ref - 55
-    # VCF Alt - 56
+    # The following information is not necessary right, see file columnProfile.txt
+    # VCF Chr - 49
+    # VCF Start - 50
+    # VCF Ref - 52
+    # VCF Alt - 53
     # Func.refGene - 6
     # Gene.refGene - 7
     # ExonicFunc.refGene - 8
@@ -150,11 +150,11 @@ while(my $ann = <ANN>){
     # intDb_genotypeFrequency(66)	
     # intDb_filter	
     # snp137 - 14
-    # VCF_QUAL - 57
-    # VCF_FILTER - 58
-    # VCF_GT_genotype - 61-0
-    # VCF_AD_AlleleDepth - 61-1
-    # VCF_DP_depth - 61-2
+    # VCF_QUAL - 54
+    # VCF_FILTER - 55
+    # VCF_GT_genotype - 58-0
+    # VCF_AD_AlleleDepth - 58-1
+    # VCF_DP_depth - 58-2
     # avsift - 15
     # LJB2_SIFT - 16
     # LJB2_PolyPhen2_HDIV - 17
@@ -168,9 +168,9 @@ while(my $ann = <ANN>){
     # LJB2_SiPhy - 30
     # repeatMasker - 5
     # phastConsElements46way - 10
-    # VCF_GQ_genotypeQuality - 61-3
-    # VCF_PL_genotypeProbability - 61-4
-    # VCF_Info - 59
+    # VCF_GQ_genotypeQuality - 58-3
+    # VCF_PL_genotypeProbability - 58-4
+    # VCF_Info - 56
 
 #    $headerString = join '', "VCF_CHR\tVCF_START\tVCF_REF\tVCF_ALT\tFunc.refGene\tGene.refGene\tExonicFunc.refGene\tAAChange.refGene\tesp6500si_all\t1000g2012apr_all\tintDb_alleleFrequency(",$totalSampleNo*2,")\tintDb_genotypeFrequency($totalSampleNo)\tintDb_filter\tHGMD.amino\tHGMD.GT\tHGMD.acc_num\tHGMD.disease\tHGMD.omimid\tHGMD.tag\tHGMD.comments\tHGMD.pmid\tHGMD.location\tHGMD.locref\tHGMD.deletion\tHGMD.insertion\tHGMD.alleleChange\tHGMD.score\tHGMD.type\tHGMD.wildtype\tclinvar_20140211\tsnp137\tVCF_QUAL\tVCF_FILTER\tVCF_GT_genotype\tVCF_AD_AlleleDepth\tVCF_DP_depth\tcaddgt10\tljb23_metalr\tljb23_metasvm\tavsift\tLJB2_SIFT\tLJB2_PolyPhen2_HDIV\tLJB2_PolyPhen2_HVAR\tLJB2_LRT\tLJB2_MutationTaster\tLJB_MutationAssessor\tLJB2_FATHMM\tLJB2_GERP++\tLJB2_PhyloP\tLJB2_SiPhy\trepeatMasker\tphastConsElements46way\tVCF_GQ_genotypeQuality\tVCF_PL_genotypeProbability\tVCF_INFO";
     $headerString = join '', "VCF_CHR\tVCF_START\tVCF_REF\tVCF_ALT\tFunc.refGene\tGene.refGene\tExonicFunc.refGene\tAAChange.refGene\tesp6500si_all\t1000g2012apr_all\tintDb_alleleFrequency(",$totalSampleNo*2,")\tintDb_genotypeFrequency($totalSampleNo)\tintDb_filter\tHGMD.amino\tHGMD.GT\tHGMD.acc_num\tHGMD.disease\tHGMD.omimid\tHGMD.tag\tHGMD.comments\tHGMD.pmid\tHGMD.location\tHGMD.locref\tHGMD.deletion\tHGMD.insertion\tHGMD.alleleChange\tclinvar_20140211\tsnp137\tVCF_QUAL\tVCF_FILTER\tVCF_GT_genotype\tVCF_AD_AlleleDepth\tVCF_DP_depth\tcaddgt10\tljb23_metalr\tljb23_metasvm\tavsift\tLJB2_SIFT\tLJB2_PolyPhen2_HDIV\tLJB2_PolyPhen2_HVAR\tLJB2_LRT\tLJB2_MutationTaster\tLJB_MutationAssessor\tLJB2_FATHMM\tLJB2_GERP++\tLJB2_PhyloP\tLJB2_SiPhy\trepeatMasker\tphastConsElements46way\tVCF_GQ_genotypeQuality\tVCF_PL_genotypeProbability\tVCF_INFO";
@@ -210,12 +210,12 @@ while(my $ann = <ANN>){
 
     my ($indbal, $indbgt, $indbaf_all, $indbgt_all, $indb_filter);
 
-    my $annRef = $anns[55];
-    my $annAlt = $anns[56];
+    my $annRef = $anns[52];
+    my $annAlt = $anns[53];
 
     my $annAltCom;
-    if($alt{"$anns[52]\t$anns[53]"}){
-      $annAltCom = $alt{"$anns[52]\t$anns[53]"};
+    if($alt{"$anns[49]\t$anns[50]"}){
+      $annAltCom = $alt{"$anns[49]\t$anns[50]"};
     }
 
 
@@ -243,8 +243,8 @@ while(my $ann = <ANN>){
 
     $ngt = join '/', (sort @ngt);
 
-    if($freq{"$anns[52]\t$anns[53]"}->{$ngt}){
-      $indbgt = $freq{"$anns[52]\t$anns[53]"}->{$ngt};
+    if($freq{"$anns[49]\t$anns[50]"}->{$ngt}){
+      $indbgt = $freq{"$anns[49]\t$anns[50]"}->{$ngt};
     }else{
       $indbgt = "NA";
     }
@@ -253,12 +253,12 @@ while(my $ann = <ANN>){
 
       if($bkey != 0){
 
-	if($freq{"$anns[52]\t$anns[53]"}->{$b{$bkey}}){
+	if($freq{"$anns[49]\t$anns[50]"}->{$b{$bkey}}){
 	  
 	  if(!$indbal){
-	    $indbal = $freq{"$anns[52]\t$anns[53]"}->{$b{$bkey}};
+	    $indbal = $freq{"$anns[49]\t$anns[50]"}->{$b{$bkey}};
 	  }else{
-	    $indbal = join ',', $indbal, $freq{"$anns[52]\t$anns[53]"}->{$b{$bkey}};
+	    $indbal = join ',', $indbal, $freq{"$anns[49]\t$anns[50]"}->{$b{$bkey}};
 	  }
 
 	}
@@ -271,20 +271,20 @@ while(my $ann = <ANN>){
       $indbal = 'NA';
     }
 
-    if($freq{"$anns[52]\t$anns[53]"}->{"infoGT"}){
-      $indbgt_all = $freq{"$anns[52]\t$anns[53]"}->{"infoGT"};
+    if($freq{"$anns[49]\t$anns[50]"}->{"infoGT"}){
+      $indbgt_all = $freq{"$anns[49]\t$anns[50]"}->{"infoGT"};
     }else{
       $indbgt_all = "NA";
     }
 
-    if($freq{"$anns[52]\t$anns[53]"}->{"infoAL"}){
-      $indbaf_all = $freq{"$anns[52]\t$anns[53]"}->{"infoAF"};
+    if($freq{"$anns[49]\t$anns[50]"}->{"infoAL"}){
+      $indbaf_all = $freq{"$anns[49]\t$anns[50]"}->{"infoAF"};
     }else{
       $indbaf_all = "NA";
     }
 
-    if($freq{"$anns[52]\t$anns[53]"}->{"filter"}){
-      $indb_filter = $freq{"$anns[52]\t$anns[53]"}->{"filter"};
+    if($freq{"$anns[49]\t$anns[50]"}->{"filter"}){
+      $indb_filter = $freq{"$anns[49]\t$anns[50]"}->{"filter"};
     }else{
       $indb_filter = "NA";
     }
@@ -292,7 +292,7 @@ while(my $ann = <ANN>){
 #    splice(@anns, 5,0,"$indbal\t$indbgt\t$indbal_all\t$indbgt_all\t$indb_filter");
 #    $string = join("\t", @anns);
 
-    print OUT "$anns[52]\t$anns[53]\t$anns[55]\t$anns[56]\t$anns[6]\t$anns[7]\t$anns[8]\t$anns[9]\t$anns[12]\t$anns[13]\t$indbal\t$indbgt\t$indb_filter\t$anns[35]\t$anns[36]\t$anns[37]\t$anns[38]\t$anns[39]\t$anns[40]\t$anns[41]\t$anns[42]\t$anns[43]\t$anns[44]\t$anns[45]\t$anns[46]\t$anns[47]\t$anns[31]\t$anns[14]\t$anns[57]\t$anns[58]\t$anns[51]-$g\t", (split /:/, $anns[61])[1], "\t", (split /:/, $anns[61])[2], "\t$anns[34]\t$anns[32]\t$anns[33]\t$anns[15]\t$anns[16]\t$anns[17]\t$anns[19]\t$anns[21]\t$anns[23]\t$anns[25]\t$anns[27]\t$anns[28]\t$anns[29]\t$anns[30]\t$anns[5]\t$anns[10]\t", (split /:/, $anns[61])[3], "\t", (split /:/, $anns[61])[4], "\t$anns[59]\n";
+    print OUT "$anns[49]\t$anns[50]\t$anns[52]\t$anns[53]\t$anns[6]\t$anns[7]\t$anns[8]\t$anns[9]\t$anns[12]\t$anns[13]\t$indbal\t$indbgt\t$indb_filter\t$anns[35]\t$anns[36]\t$anns[37]\t$anns[38]\t$anns[39]\t$anns[40]\t$anns[41]\t$anns[42]\t$anns[43]\t$anns[44]\t$anns[45]\t$anns[46]\t$anns[47]\t$anns[31]\t$anns[14]\t$anns[54]\t$anns[55]\t$anns[48]-$g\t", (split /:/, $anns[58])[1], "\t", (split /:/, $anns[58])[2], "\t$anns[34]\t$anns[32]\t$anns[33]\t$anns[15]\t$anns[16]\t$anns[17]\t$anns[19]\t$anns[21]\t$anns[23]\t$anns[25]\t$anns[27]\t$anns[28]\t$anns[29]\t$anns[30]\t$anns[5]\t$anns[10]\t", (split /:/, $anns[58])[3], "\t", (split /:/, $anns[58])[4], "\t$anns[56]\n";
 
   }
 
