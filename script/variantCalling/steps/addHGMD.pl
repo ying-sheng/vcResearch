@@ -26,7 +26,8 @@ foreach my $eachAnn (@annotationFiles){
 
   my $resourceTag = join '_', "HGMD", $tag;
 
-  $tagExpression = "-E $resourceTag.amino -E $resourceTag.acc_num -E $resourceTag.disease -E $resourceTag.omimid -E $resourceTag.tag -E $resourceTag.comments -E $resourceTag.pmid -E $resourceTag.location -E $resourceTag.locref -E $resourceTag.deletion -E $resourceTag.insertion -E $resourceTag.type -E $resourceTag.score -E $resourceTag.wildtype ";
+#  $tagExpression = "-E $resourceTag.amino -E $resourceTag.acc_num -E $resourceTag.disease -E $resourceTag.omimid -E $resourceTag.tag -E $resourceTag.comments -E $resourceTag.pmid -E $resourceTag.location -E $resourceTag.locref -E $resourceTag.deletion -E $resourceTag.insertion -E $resourceTag.type -E $resourceTag.score -E $resourceTag.wildtype ";
+  $tagExpression = "-E $resourceTag.amino -E $resourceTag.acc_num -E $resourceTag.disease -E $resourceTag.omimid -E $resourceTag.tag -E $resourceTag.comments -E $resourceTag.pmid -E $resourceTag.location -E $resourceTag.locref -E $resourceTag.deletion -E $resourceTag.insertion ";
 
   $resultVCF = join '.', "all.filter", $tag, "vcf";
 
