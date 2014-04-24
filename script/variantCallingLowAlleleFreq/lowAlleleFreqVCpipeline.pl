@@ -58,8 +58,9 @@ while(my $bam = <BAM>){
   $rg = (split /\t+/, $rg)[0];
 
   # Extract reads in the chosen regions
+  print EXT "echo \"$sampleID\"\n";
   my $extractBamFile = join '.', $sampleID, "region", "bam";
-  print EXT "$samtoolsDir/samtools view -b -L $regionFile $bamFile > $extractBamFile\n";
+#  print EXT "$samtoolsDir/samtools view -b -L $regionFile $bamFile > $extractBamFile\n";
 
 
   # Convert back the recalibrated base quality to original base quality
@@ -78,6 +79,7 @@ while(my $bam = <BAM>){
   print EXT "java -Xmx4g -jar $picardDir/SamToFastq.jar INPUT=$oqBamFile FASTQ=$read1File SECOND_END_FASTQ=$read2File 2>errSamToFastq_$sampleID\n\n";
 
   # alignment by novoalign
+  print ANA "echo \"$sampleID\"\n";
   my $samFile = join '.', $sampleID, "sam";
   my $novoalignLog = join ".", $sampleID, "novoalign", "Stats", "txt";
   print ANA "$novoalign/novoalign -F STDFQ -f ../fastqFiles/$read1File ../fastqFiles/$read2File -o SAM \$\'$rg\' -c 99 -r None -i PE 200,50 -d $novoalignRef > $samFile 2>$novoalignLog\n";
