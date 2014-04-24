@@ -66,6 +66,9 @@ my $inhDB = $configuration->val("Data", "inhDB");
 my $hgmdFile = $configuration->val("Data", "hgmd");
 
 my $annovarDir = $configuration->val("Tool","annovar");
+######################### check whether it is right for configuration file
+my $gatkDir = $configuration->val("Tool", "gatk");
+my $ref = $configuration->val("Data", "samtools");
 
 system "date > start.out";
 system "echo \"The process is started at: \" > reportVarAnnotation.txt";
@@ -81,8 +84,8 @@ system "date";
 print "\n";
 
 print REPORT "Adding HGMD annotation on the vcf file\n\n";
-print REPORT "perl $scriptPath/steps/addHGMD.pl $file all.filter.hgmd.vcf $hgmdFile\n\n";
-system "perl $scriptPath/steps/addHGMD.pl $file all.filter.hgmd.vcf $hgmdFile";
+print REPORT "perl $scriptPath/steps/addHGMD.pl $file all.filter.hgmd.vcf $hgmdFile $gatkDir $ref\n\n";
+system "perl $scriptPath/steps/addHGMD.pl $file all.filter.hgmd.vcf $hgmdFile $gatkDir $ref";
 
 print REPORT "Using annovar to do annotation\n\n";
 print REPORT "perl $annovarDir/convert2annovar.pl --format vcf4old --includeinfo --chrmt MT --withzyg all.filter.hgmd.vcf > all.filter.hgmd.avinput 2>errConvert2annovarAll\n";
