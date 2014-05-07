@@ -16,6 +16,8 @@ while(my $hgmd = <HGMD>){
 
   if($hgmd !~ /^#/){
 
+    chomp $hgmd;
+
     my ($chr, $pos, $id, $ref, $alt, $gt) = (split /\t/, $hgmd)[0,1,2,3,4,9];
 
     $hgmdV{$id}->{"chr"} = $chr;
