@@ -17,7 +17,7 @@ while(my $line = <IN>){
   
   my $newline;
   
-  if($line =~ /^Chr/){
+  if($line =~ /Func/){
     
     for(my $x = 0; $x < scalar(@items); $x ++){
       
