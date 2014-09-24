@@ -47,7 +47,7 @@ while(my $anno = <ANNO>){
 
   if($anno =~ /HGMD/){
 
-    my @info = split /;/, $items[-3];
+    my @info = split /;/, $items[$otherinfoIndex+8];
     my $vChr = $items[-10];
     my $vRef = $items[-7];
     my $vAlt = $items[-6];
